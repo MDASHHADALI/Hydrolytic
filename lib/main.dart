@@ -26,15 +26,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hydrolytic',
       theme: buildAppTheme(),
-      home: const MainScreen(),
+      home: const AuthScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-//==============================================================================
-// Main Screen
-//==============================================================================
+// Replace your existing MainScreen widget with this updated version.
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -59,6 +58,45 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> _showLogoutConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: const Text('Confirm Logout'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to logout?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => const AuthScreen()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
@@ -71,7 +109,12 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.water_drop_outlined, color: AppColors.primary, size: 28),
+        // NEW: Added a leading water icon for branding.
+        leading: const Icon(
+          Icons.water_drop_outlined,
+          color: AppColors.primary,
+          size: 28,
+        ),
         title: Column(
           children: [
             Text(
@@ -92,10 +135,11 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         actions: [
+          // MODIFIED: Redesigned the logout icon and button.
           IconButton(
-            icon: const Icon(Icons.account_circle_outlined, size: 28),
-            tooltip: 'Profile',
-            onPressed: () {},
+            icon: const Icon(Icons.logout_rounded), // Changed from account icon
+            tooltip: 'Logout', // Updated tooltip
+            onPressed: _showLogoutConfirmationDialog,
           ),
         ],
       ),
@@ -191,6 +235,313 @@ class AnomalyCard extends StatelessWidget {
           ]),
         ),
       ]),
+    );
+  }
+}
+//==============================================================================
+// REDESIGNED: Authentication Screen (Login & Signup)
+//==============================================================================
+
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool _isLoginView = true;
+
+  void _toggleView() {
+    setState(() {
+      _isLoginView = !_isLoginView;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        // Added a subtle gradient background
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.background,
+              Colors.blue.shade50,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // App Logo and Name
+                  Icon(Icons.water_drop_outlined, color: AppColors.primary, size: 50),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Hydrolytic',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 32),
+                  ),
+                  Text(
+                    'Deep Data. Clear Insights.',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 40),
+
+                  // Card containing the form
+                  Card(
+                    elevation: 8,
+                    shadowColor: Colors.black.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(opacity: animation, child: child);
+                        },
+                        child: _isLoginView
+                            ? LoginForm(key: const ValueKey('login'), onSwitchToSignup: _toggleView)
+                            : SignupForm(key: const ValueKey('signup'), onSwitchToLogin: _toggleView),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginForm extends StatelessWidget {
+  final VoidCallback onSwitchToSignup;
+  const LoginForm({super.key, required this.onSwitchToSignup});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Welcome Back',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Login to continue',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 24),
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Email',
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 16),
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Password',
+            prefixIcon: Icon(Icons.lock_outline),
+          ),
+          obscureText: true,
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const MainScreen()),
+            );
+          },
+          child: const Text('LOGIN'),
+        ),
+        const SizedBox(height: 24),
+        GestureDetector(
+          onTap: onSwitchToSignup,
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: "Don't have an account? ",
+              style: Theme.of(context).textTheme.bodyMedium,
+              children: [
+                TextSpan(
+                  text: 'Sign Up',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// SignUpForm
+
+class SignupForm extends StatefulWidget {
+  final VoidCallback onSwitchToLogin;
+  const SignupForm({super.key, required this.onSwitchToLogin});
+
+  @override
+  State<SignupForm> createState() => _SignupFormState();
+}
+
+class _SignupFormState extends State<SignupForm> {
+  String? _selectedRole;
+  final List<String> _roles = ['Policymaker', 'Researcher', 'Field Officer', 'General Public'];
+
+  // NEW: State variables for the new fields
+  String? _selectedState;
+  final List<String> _indianStates = [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+    'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
+    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand',
+    'West Bengal', 'Delhi'
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Create Account',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Get started with Hydrolytic',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 24),
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Full Name',
+            prefixIcon: Icon(Icons.person_outline),
+          ),
+          keyboardType: TextInputType.name,
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: _selectedRole,
+          decoration: const InputDecoration(
+            labelText: 'I am a...',
+            prefixIcon: Icon(Icons.work_outline_rounded),
+          ),
+          items: _roles.map((String role) {
+            return DropdownMenuItem<String>(
+              value: role,
+              child: Text(role),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedRole = newValue;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+
+        // NEW: Field for Organization / Affiliation
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Organization / Affiliation',
+            prefixIcon: Icon(Icons.corporate_fare_rounded),
+          ),
+          keyboardType: TextInputType.text,
+        ),
+        const SizedBox(height: 16),
+
+        // NEW: Dropdown for selecting State
+        DropdownButtonFormField<String>(
+          value: _selectedState,
+          decoration: const InputDecoration(
+            labelText: 'State',
+            prefixIcon: Icon(Icons.location_city_rounded),
+          ),
+          items: _indianStates.map((String state) {
+            return DropdownMenuItem<String>(
+              value: state,
+              child: Text(state),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedState = newValue;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+
+        // NEW: Field for Phone Number
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Phone Number',
+            prefixIcon: Icon(Icons.phone_outlined),
+          ),
+          keyboardType: TextInputType.phone,
+        ),
+        const SizedBox(height: 16),
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Email',
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 16),
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Password',
+            prefixIcon: Icon(Icons.lock_outline),
+          ),
+          obscureText: true,
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const MainScreen()),
+            );
+          },
+          child: const Text('SIGN UP'),
+        ),
+        const SizedBox(height: 24),
+        GestureDetector(
+          onTap: widget.onSwitchToLogin,
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: "Already have an account? ",
+              style: Theme.of(context).textTheme.bodyMedium,
+              children: [
+                TextSpan(
+                  text: 'Login',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

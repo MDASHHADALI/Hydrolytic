@@ -60,5 +60,33 @@ ThemeData buildAppTheme() {
       type: BottomNavigationBarType.fixed,
     ),
     colorScheme: const ColorScheme.light(primary: AppColors.primary, secondary: AppColors.secondary),
+
+    // MODIFIED: Input decoration theme for a modern, filled look.
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      labelStyle: const TextStyle(color: AppColors.fontBody),
+      prefixIconColor: AppColors.fontBody,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 18), // Increased button height
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+    ),
   );
 }
