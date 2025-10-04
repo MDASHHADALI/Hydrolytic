@@ -655,7 +655,7 @@ class _PolicymakerDashboardScreenState extends State<PolicymakerDashboardScreen>
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          _DashboardSection(title: 'Long-Term Climate Forecast', child: _buildForecastCard(context)),
+          _DashboardSection(title: 'Long-Term Groundwater Forecast', child: _buildForecastCard(context)),
           _DashboardSection(title: 'Regional Water News', child: _buildNewsFeedCard(context)),
         ],
       ),
