@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:ui'; // Required for the blur effect (ImageFilter)
+import 'dart:ui';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -40,9 +40,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Replace your existing MainScreen widget with this updated version.
 
-// MODIFIED: MainScreen now uses the reusable logout dialog.
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -207,7 +205,7 @@ class AnomalyCard extends StatelessWidget {
   }
 }
 //==============================================================================
-// REDESIGNED: Authentication Screen (Login & Signup)
+//  Authentication Screen (Login & Signup)
 //==============================================================================
 
 class AuthScreen extends StatefulWidget {
@@ -391,7 +389,7 @@ class _SignupFormState extends State<SignupForm> {
     'Bihar', 'Rajasthan', 'Maharashtra', 'Uttar Pradesh', 'Karnataka', 'Tamil Nadu', 'Delhi'
   ];
 
-  // NEW: State variables for password visibility
+  // State variables for password visibility
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
@@ -472,9 +470,6 @@ class _SignupFormState extends State<SignupForm> {
     );
   }
 }
-// Replace your existing PolicymakerDashboardScreen widget with this corrected version.
-
-// Replace your existing PolicymakerDashboardScreen widget with this corrected version.
 
 class PolicymakerDashboardScreen extends StatefulWidget {
   const PolicymakerDashboardScreen({super.key});
@@ -546,7 +541,6 @@ class _PolicymakerDashboardScreenState extends State<PolicymakerDashboardScreen>
     );
   }
 
-  // In _PolicymakerDashboardScreenState, replace the _buildSliverAppBar method with this one.
 
   SliverAppBar _buildSliverAppBar() {
     return SliverAppBar(
@@ -944,7 +938,6 @@ class _PolicymakerDashboardScreenState extends State<PolicymakerDashboardScreen>
     );
   }
 
-  // In _PolicymakerDashboardScreenState, replace the old _buildForecastCard method with this one.
 
   Widget _buildForecastCard(BuildContext context) {
     // MODIFIED: This card now shows a specific groundwater forecast.
@@ -1013,7 +1006,6 @@ class _PolicymakerDashboardScreenState extends State<PolicymakerDashboardScreen>
   }
 }
 
-// Replace the existing _SliverTabBarDelegate class with this corrected version.
 
 class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
   final Function(dynamic) onTabChanged;
@@ -1063,7 +1055,7 @@ class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
 
 
 
-// NEW: Reusable Logout Confirmation Dialog
+// Reusable Logout Confirmation Dialog
 Future<void> showLogoutConfirmationDialog(BuildContext context) async {
   return showDialog<void>(
     context: context,
@@ -1105,7 +1097,6 @@ Future<void> showLogoutConfirmationDialog(BuildContext context) async {
 
 
 
-// Replace your existing PublicDashboardScreen widget with this updated version.
 
 class PublicDashboardScreen extends StatefulWidget {
   const PublicDashboardScreen({super.key});
@@ -1348,7 +1339,7 @@ class _PublicDashboardScreenState extends State<PublicDashboardScreen> with Sing
     );
   }
 
-  // NEW: A card to compare local water level with the state average.
+
   Widget _buildComparisonCard(BuildContext context, double current, double stateAverage) {
     final double difference = current - stateAverage;
     final bool isBelow = difference > 0; // Remember, higher number means lower water level
@@ -1744,7 +1735,7 @@ class _FieldOfficerDashboardScreenState extends State<FieldOfficerDashboardScree
   }
 }
 // ==============================================================================
-// REDESIGNED: FieldOfficerStationDetailScreen with Analyst-Grade Hydrograph
+// FieldOfficerStationDetailScreen with Analyst-Grade Hydrograph
 // ==============================================================================
 
 class FieldOfficerStationDetailScreen extends StatelessWidget {
@@ -1783,7 +1774,7 @@ class FieldOfficerStationDetailScreen extends StatelessWidget {
     );
   }
 
-  // --- CORE FIELD TOOLS WIDGET (Remains the same) ---
+  // --- CORE FIELD TOOLS WIDGET
   Widget _buildCoreFieldTools(BuildContext context) {
     return Card(
       child: Padding(
@@ -1956,7 +1947,7 @@ class FieldOfficerStationDetailScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// Station Search Delegate (New class for map search functionality)
+// Station Search Delegate (class for map search functionality)
 // ==============================================================================
 
 class StationSearchDelegate extends SearchDelegate<Station?> {
